@@ -1,3 +1,6 @@
+library(usethis)
+# use_readme_md()
+
 force_list <- GET("https://data.police.uk/api/forces") %>% 
   content("text") %>% # extract the JSON
   fromJSON() # convert the JSON string to a list
@@ -13,7 +16,7 @@ dates_list <- GET("https://data.police.uk/api/crimes-street-dates") %>%
 
 # check <- dates_list$`stop-and-search`[[12]]
 date_range <- data.frame(months = dates_list$date) # API only gives back until 2021
-options(timeout = 1000)
+
 
 # COME BACK HERE AND CHANGE FUNCTION EXTRACT SO THAT YOU CAN GIVE IT A LIST OF ZIPPED FOLDERS IN TEMPFILES
 temp1 <- tempfile()
@@ -21,6 +24,7 @@ temp2 <- tempfile()
 temp3 <- tempfile()
 temp4 <- tempfile()
 
+options(timeout = 1000) # download kept timing out when limit was at 60 second default
 download.file("https://data.police.uk/data/archive/2024-08.zip", temp1)
 download.file("https://data.police.uk/data/archive/2021-08.zip", temp2)
 download.file("https://data.police.uk/data/archive/2018-08.zip", temp3)
@@ -31,7 +35,7 @@ download.file("https://data.police.uk/data/archive/2015-08.zip", temp4)
 met_ss_df <- extract(zipped_folder = temp1, police = "metropolitan", data_type = "stop-and-search") %>% 
   bind_rows(extract(zipped_folder = temp2,  police = "metropolitan", data_type = "stop-and-search")) %>% 
   bind_rows(extract(zipped_folder = temp3,  police = "metropolitan", data_type = "stop-and-search")) %>% 
-  bind_rows(extract(zipped_files = temp4,  police = "metropolitan", data_type = "stop-and-search"))
+  bind_rows(extract(zipped_folder = temp4,  police = "metropolitan", data_type = "stop-and-search"))
 
 
 

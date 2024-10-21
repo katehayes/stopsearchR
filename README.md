@@ -9,7 +9,10 @@ The site also has an 'archive' page (https://data.police.uk/data/archive/), wher
 The ONS Open Geography Portal (https://geoportal.statistics.gov.uk/)
 
 ## Police stop & search in Tower Hamlets at a glance
+Just looking here at one London borough, Tower Hamlets. From 2015, searches increased in frequency, before peaking in late 2018 and then falling. Since mid-2022, search frequency has been close to its 2015/16 level. <br>
 ![plot_th_powers_time](https://github.com/katehayes/stopsearchR/blob/main/plots/plot_th_powers_time.png)
+<br>
+![plot_th_age_time](https://github.com/katehayes/stopsearchR/blob/main/plots/plot_th_age_time.png)
 <br>
 One particular LSOA - 'Tower Hamlets 021D' in Whitechapel - is recorded as the location of 4654 searches across the period 2016 to 2024. No other LSOA in Tower Hamlets records searches at anything close to this frequency - searches happen in 'Tower Hamlets 021D' more than twice as often as the next most frequently searched LSOA in Tower Hamlets.<br>
 ![plot_th_ss_space](https://github.com/katehayes/stopsearchR/blob/main/plots/plot_th_ss_space.png)

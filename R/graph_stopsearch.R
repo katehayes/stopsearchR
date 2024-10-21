@@ -1,3 +1,32 @@
+library(viridis)
+
+plot_th_ss_space <- met_ss %>% 
+  st_drop_geometry() %>% 
+  filter(LA == "Tower Hamlets") %>% 
+  group_by(lsoa, ward, lsoa_shape) %>% 
+  mutate(count = 1) %>% 
+  summarise(count = sum(count)) %>% 
+  # filter(lsoa != "Tower Hamlets 021D") %>% 
+  st_as_sf() %>% 
+  st_transform(crs = 4326) %>% 
+  ggplot() +
+    geom_sf(data = th_lsoa_shape, aes(), colour="white", fill = "black") +
+    geom_sf(aes(fill=count),
+            colour="white") +
+    geom_sf(data = w22_shape %>% 
+            filter(LAD22MN %in% ldn_borough_codes),
+            aes(), 
+            colour="white", #linewidth = 0.4,
+            fill = NA) +
+    scale_fill_viridis(option = "turbo",
+                       begin = 0.05,
+                       end = 1)
+
+plot_th_ss_space
+
+
+
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # # # # # # #graphs for training # # # # # # # # # # # # # # # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -41,7 +70,7 @@ av_day <- ss_th %>%
   mutate(ethnicity_officer = ifelse((is.na(ethnicity_officer) | ethnicity_officer == "Other"), 
                                     "Unknown", ethnicity_officer)) %>% 
   mutate(gender = ifelse((is.na(gender) | gender == "Other"), 
-                                    "Unknown", gender)) %>% 
+                         "Unknown", gender)) %>% 
   ggplot() +
   geom_bar(aes(x = age, fill = gender), position = "stack") +
   # facet_wrap(~ethnicity_officer, ncol = 1) +
@@ -83,6 +112,58 @@ av_day <- ss_th %>%
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # # # # # # #making map of the LSOAs and wards# # # # # # # # # # # # # # # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+
+# plot_hmofires_space <- fires %>% 
+#   mutate(count = 1) %>% 
+#   group_by(borough, ward, hmo_yn) %>% 
+#   summarise(count = sum(count)) %>% 
+#   ungroup() %>% 
+#   pivot_wider(names_from = hmo_yn,
+#               values_from = count,
+#               values_fill = 0) %>% 
+#   pivot_longer(c("HMO", "Other dwelling"),
+#                names_to = "hmo_yn",
+#                values_to = "count") %>% 
+#   group_by(ward) %>% 
+#   mutate(pc = count / sum(count)) %>% 
+#   filter(hmo_yn != "Other dwelling") %>% 
+#   filter(count > 0) %>% 
+#   left_join(w22_shape %>% 
+#               select(WD22CD, geometry) %>% 
+#               rename(ward = WD22CD)) %>% 
+#   st_as_sf() %>% 
+#   st_transform(crs = 4326) %>% 
+#   # st_crop(ont, xmin=-1, xmax=1, ymin=51, ymax=52) %>% 
+#   ggplot() +
+#   geom_sf(data = fires %>% 
+#             distinct(ward) %>% 
+#             mutate(count = 1) %>% 
+#             left_join(w22_shape %>% 
+#                         select(WD22CD, geometry) %>%
+#                         rename(ward = WD22CD)) %>% 
+#             st_as_sf() %>%
+#             st_transform(crs = 4326), aes(), colour="white", fill = "black") +
+#   geom_sf(aes(fill=count), colour="white") +
+#   scale_fill_viridis(option = "turbo",
+#                      begin = 0,
+#                      end = 1) +
+#   theme(# strip.text = element_blank(),
+#     # plot.margin = unit(c(1,9,0.7,0.8), "lines"),
+#     plot.background = element_rect(fill = "white"),
+#     panel.background = element_blank(),
+#     axis.line.x.bottom = element_line(colour = "black"),
+#     axis.line.y.left = element_line(colour = "black"),
+#     # panel.grid.major.x = element_line(color = "darkgrey", linewidth = 0.4),
+#     # panel.grid.major.y = element_line(color = "darkgrey", linewidth = 0.4),
+#     # panel.grid.minor.x = element_line(color = "darkgrey", linewidth = 0.1),
+#     # panel.grid.minor.y = element_line(color = "darkgrey", linewidth = 0.1),
+#     legend.title = element_blank(),
+#     legend.position = c(.9, 0.17)) +
+#   labs(title = "Total number of HMO fires in each London ward between 2009 and 2014", 
+#        subtitle = "Wards with no recorded HMO fires are filled black") 
+
+
 
 th_map_lsoa <- ss_th %>% 
   st_drop_geometry() %>% 

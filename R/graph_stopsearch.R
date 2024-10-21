@@ -91,8 +91,57 @@ ggsave(filename = "plots/plot_th_powers_time.png", plot_th_powers_time)
 
 
 
+plot_th_age_time <- met_ss %>% 
+  st_drop_geometry() %>% 
+  filter(LA == "Tower Hamlets") %>% 
+  # mutate(month_yr = as.yearmon(date, "%Y %m")) %>% 
+  mutate(age = ifelse(is.na(age), "Unknown", age)) %>% 
+  mutate(count = 1) %>% 
+  group_by(date, age) %>% 
+  summarise(count = sum(count)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = age,
+              values_from = count,
+              values_fill = 0) %>% 
+  pivot_longer(-date,
+                names_to = "age",
+                values_to = "count") %>% 
+  mutate(age = factor(age, levels = c("under 10",
+                                      "10-17", "18-24", 
+                                      "25-34", "over 34",
+                                      "unknown"))) %>% 
+  arrange(date) %>% 
+  group_by(age) %>% 
+  mutate(count = rollmean(count, k = 7, fill = NA, align = "center")) %>%
+  filter(age != "under 10") %>% 
+  mutate(date = as.Date(date)) %>% 
+  ggplot() +
+  geom_bar(aes(x = date, y = count, fill = age),
+           stat = "identity", position = "stack", width=1) +
+  facet_grid(rows = vars(age)) +
+  scale_x_date(name = "",
+               date_breaks = "1 year",
+               date_minor_breaks = "3 months",
+               # limits = c(as.Date("2009-02-20"), as.Date("2024-06-30")),
+               date_labels = "%Y",
+               # expand = expansion(add = c(.6, 500)),
+               expand = c(0,0)) +
+  theme(strip.text = element_blank(),
+        plot.background = element_rect(fill = "white"),
+        panel.background = element_blank(),
+        legend.background = element_rect(fill = "white"),
+        axis.line.x.bottom = element_line(colour = "black"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(color = "darkgrey", linewidth = 0.4),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        legend.title = element_blank()) + 
+  scale_fill_manual(values = c("#0054FFFF", "#1A9850FF", "#90CDE7", "#ED3F39FF", "lightgrey")) +
+  labs(title = "Daily stop and searches in Tower Hamlets, by age group", 
+       subtitle = "7-day rolling average")
 
-
+  plot_th_age_time 
+  ggsave(filename = "plots/plot_th_age_time.png", plot_th_age_time)
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # # # # # # #graphs for training # # # # # # # # # # # # # # # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 

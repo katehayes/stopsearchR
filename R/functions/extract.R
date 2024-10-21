@@ -2,7 +2,7 @@ extract <- function(zipped_folder, police = ".", data_type = ".") {
   
   files_list <- unzip(zipped_folder, list = TRUE)$Name
   files_list <- grep(police, files_list, value = TRUE)
-  files_list <- grep(data, files_list, value = TRUE)
+  files_list <- grep(data_type, files_list, value = TRUE)
   
   df <- bind_rows(lapply(files_list, function(fn) read_csv(unz(zipped_folder, fn), col_types = cols(Latitude = col_double(), Longitude = col_double()))))
   

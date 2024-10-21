@@ -1,3 +1,14 @@
+
+
+
+
+
+
+
+
+
+
+
 w_shape <- st_read("/Users/katehayes/Library/CloudStorage/GoogleDrive-khayes2@sheffield.ac.uk/My Drive/CL_drive_data/Wards_December_2022_Boundaries_UK_BFC_-3416072881830331872 (1)/WD_DEC_2022_UK_BFC.shp")
 # going to use ward boundaries from the same place as below, the place the police linked, and hope it works
 # actually maybe I've changed back
@@ -15,9 +26,10 @@ lsoa2LA <- read_xlsx("/Users/katehayes/Library/CloudStorage/GoogleDrive-khayes2@
 # lsoa2lsoa <- read.csv("/Users/katehayes/THdata/LSOA_(2011)_to_LSOA_(2021)_to_Local_Authority_District_(2022)_Lookup_for_England_and_Wales_(Version_2).csv")
 
 
-save(w_shape, file = "Output/Data/Cleaned/w_shape.Rdata")
-save(lsoa_shape, file = "Output/Data/Cleaned/lsoa_shape.Rdata")
-save(lsoa2LA, file = "Output/Data/Cleaned/lsoa2LA.Rdata")
+# save(w_shape, file = "Output/Data/Cleaned/w_shape.Rdata")
+# save(lsoa_shape, file = "Output/Data/Cleaned/lsoa_shape.Rdata")
+# save(lsoa2LA, file = "Output/Data/Cleaned/lsoa2LA.Rdata")
+
 # this downloaded set is mising november 2022...
 # long lat data goes missing in 2016...
 

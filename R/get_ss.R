@@ -1,4 +1,10 @@
+library(tidyverse)
 library(usethis)
+library(httr2)
+library(httr)
+library(jsonlite)
+library(lubridate)
+library(zoo)
 # use_readme_md()
 
 force_list <- GET("https://data.police.uk/api/forces") %>% 
@@ -32,11 +38,34 @@ download.file("https://data.police.uk/data/archive/2015-08.zip", temp4)
 
 # should be able to extract either by force or by data type
 
-met_ss_df <- extract(zipped_folder = temp1, police = "metropolitan", data_type = "stop-and-search") %>% 
+raw_met_ss <- extract(zipped_folder = temp1, police = "metropolitan", data_type = "stop-and-search") %>% 
   bind_rows(extract(zipped_folder = temp2,  police = "metropolitan", data_type = "stop-and-search")) %>% 
   bind_rows(extract(zipped_folder = temp3,  police = "metropolitan", data_type = "stop-and-search")) %>% 
   bind_rows(extract(zipped_folder = temp4,  police = "metropolitan", data_type = "stop-and-search"))
 
+save(raw_met_ss, file = "data/raw_met_ss.RData")
+
+
+met_ss <- raw_met_ss %>% 
+  rename(outcome = Outcome,
+         powers = Legislation,
+         search_type = Type,
+         date = Date,
+         gender = Gender,
+         age = `Age range`,
+         ethnicity_self = `Self-defined ethnicity`,
+         ethnicity_officer = `Officer-defined ethnicity`,
+         reason = `Object of search`,
+         link = `Outcome linked to object of search`,
+         remove_clothing = `Removal of more than just outer clothing`,
+         lat = Latitude,
+         lng = Longitude) %>% 
+  select(-c(`Part of a policing operation`, `Policing operation`)) %>% 
+  mutate(time = format(as.POSIXct(date), format = "%H:%M:%S"),
+         date = format(as.POSIXct(date), format = "%Y-%m-%d"))
+
+
+save(met_ss, file = "data/met_ss.RData")
 
 
 

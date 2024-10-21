@@ -6,7 +6,6 @@ library(dplyr)
 
 # diff between 1 and 2?
 
-https://uksocialhousing.com/properties/Romford%20Street?page=6
 
 # q <- opq(bbox = 'greater london uk') %>%
 #   add_osm_feature(key = 'highway') %>%
@@ -43,8 +42,8 @@ bb <- getbb('London Borough of Tower Hamlets')
 #   as.matrix()
 
 
-w_shape <- st_read("/Users/katehayes/CLmodelR/temp_data/Wards_December_2022_Boundaries_UK_BFC_-3416072881830331872/WD_DEC_2022_UK_BFC.shp")
-lsoa_shape <- st_read("/Users/katehayes/THdata/Lower_layer_super_output_areas_(E+W)_2011_Boundaries_(Full_Extent)_V2/LSOA_2011_EW_BFE_V2.shp")
+w_shape <- st_read("/Users/katehayes/Library/CloudStorage/GoogleDrive-khayes2@sheffield.ac.uk/My Drive/temp_data/Wards_December_2022_Boundaries_UK_BFC_-3416072881830331872/WD_DEC_2022_UK_BFC.shp")
+lsoa_shape <- st_read("/Users/katehayes/Library/CloudStorage/GoogleDrive-khayes2@sheffield.ac.uk/My Drive/THdata/Lower_layer_super_output_areas_(E+W)_2011_Boundaries_(Full_Extent)_V2/LSOA_2011_EW_BFE_V2.shp")
 
 TH021D_shape <- lsoa_shape %>% 
   filter(LSOA11NM == "Tower Hamlets 021D")

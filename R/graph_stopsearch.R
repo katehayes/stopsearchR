@@ -1,5 +1,6 @@
 library(viridis)
 
+
 plot_th_ss_space <- met_ss %>% 
   st_drop_geometry() %>% 
   filter(LA == "Tower Hamlets") %>% 
@@ -12,17 +13,82 @@ plot_th_ss_space <- met_ss %>%
   ggplot() +
     geom_sf(data = th_lsoa_shape, aes(), colour="white", fill = "black") +
     geom_sf(aes(fill=count),
-            colour="white") +
-    geom_sf(data = w22_shape %>% 
-            filter(LAD22MN %in% ldn_borough_codes),
-            aes(), 
-            colour="white", #linewidth = 0.4,
-            fill = NA) +
-    scale_fill_viridis(option = "turbo",
-                       begin = 0.05,
-                       end = 1)
+            colour="white"
+            ) +
+    # geom_sf(data = w22_shape %>% 
+    #         filter(LAD22NM == "Tower Hamlets"),
+    #         aes(), 
+    #         colour="white", #linewidth = 0.4,
+    #         fill = NA) +
+    scale_fill_viridis(option = "magma",
+                       begin = 0.01,
+                       end = 1) +
+  theme(# strip.text = element_blank(),
+    # plot.margin = unit(c(1,9,0.7,0.8), "lines"),
+    plot.background = element_rect(fill = "white"),
+    panel.background = element_blank(),
+    axis.line.x.bottom = element_line(colour = "black"),
+    axis.line.y.left = element_line(colour = "black"),
+    # panel.grid.major.x = element_line(color = "darkgrey", linewidth = 0.4),
+    # panel.grid.major.y = element_line(color = "darkgrey", linewidth = 0.4),
+    # panel.grid.minor.x = element_line(color = "darkgrey", linewidth = 0.1),
+    # panel.grid.minor.y = element_line(color = "darkgrey", linewidth = 0.1),
+    legend.title = element_blank(),
+    legend.position = c(.12, 0.14)) +
+  labs(title = "Location of stop and searches in Tower Hamlets 2016-2024",
+       subtitle = "LSOAs with no recorded stop and searches are filled black")
+
 
 plot_th_ss_space
+ggsave(filename = "plots/plot_th_ss_space.png", plot_th_ss_space) 
+
+
+plot_th_powers_time <- met_ss %>% 
+  st_drop_geometry() %>% 
+  filter(LA == "Tower Hamlets") %>% 
+  mutate(sec60 = ifelse(powers == "Criminal Justice and Public Order Act 1994 (section 60)",
+                        "Section 60", "Other power"),
+         sec60 = ifelse(powers == "Police and Criminal Evidence Act 1984 (section 1)",
+                        "PACE", sec60),
+         sec60 = ifelse(powers == "Misuse of Drugs Act 1971 (section 23)",
+                        "Misuse of Drugs", sec60),
+         sec60 = factor(sec60, levels = c( "Section 60", "PACE", "Misuse of Drugs", "Other power")),
+         week = cut.Date(as.Date(date), breaks = "1 week", labels = FALSE)) %>% 
+  mutate(count = 1) %>% 
+  group_by(week, sec60) %>% 
+  summarise(count = sum(count)) %>% 
+  ggplot() +
+  geom_bar(aes(x = week, y = count, fill = sec60),
+           stat = "identity", position = "stack", width=1) +
+  scale_fill_manual(values = c("#A8554EFF", "#90CDE7", "#91A1BAFF", "lightgrey")) +
+  theme(strip.text = element_blank(),
+    plot.background = element_rect(fill = "white"),
+    panel.background = element_blank(),
+    legend.background = element_rect(fill = "white"),
+    axis.line.x.bottom = element_line(colour = "black"),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(color = "darkgrey", linewidth = 0.4),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    legend.title = element_blank(),
+    legend.position = c(.85, 0.8)
+    # plot.margin = unit(c(1,9,0.7,0.8), "lines")
+    ) + 
+  scale_y_continuous(name = "",
+                     expand = c(0,0),
+                     breaks = seq(0, 700, 100),
+                     limits = c(0, 705)) +
+  scale_x_continuous(name = "", 
+                     expand = c(0,0),
+                     breaks = seq(6, 422, 52),
+                     labels = c("2015", "2016", "2017", "2018",
+                                "2019", "2020", "2021", "2022", "2023")) +
+  labs(title = "Weekly stop and searches in Tower Hamlets (by police search powers)", 
+       subtitle = "")
+
+plot_th_powers_time
+ggsave(filename = "plots/plot_th_powers_time.png", plot_th_powers_time)
+
 
 
 
@@ -112,57 +178,6 @@ av_day <- ss_th %>%
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # # # # # # #making map of the LSOAs and wards# # # # # # # # # # # # # # # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-
-
-# plot_hmofires_space <- fires %>% 
-#   mutate(count = 1) %>% 
-#   group_by(borough, ward, hmo_yn) %>% 
-#   summarise(count = sum(count)) %>% 
-#   ungroup() %>% 
-#   pivot_wider(names_from = hmo_yn,
-#               values_from = count,
-#               values_fill = 0) %>% 
-#   pivot_longer(c("HMO", "Other dwelling"),
-#                names_to = "hmo_yn",
-#                values_to = "count") %>% 
-#   group_by(ward) %>% 
-#   mutate(pc = count / sum(count)) %>% 
-#   filter(hmo_yn != "Other dwelling") %>% 
-#   filter(count > 0) %>% 
-#   left_join(w22_shape %>% 
-#               select(WD22CD, geometry) %>% 
-#               rename(ward = WD22CD)) %>% 
-#   st_as_sf() %>% 
-#   st_transform(crs = 4326) %>% 
-#   # st_crop(ont, xmin=-1, xmax=1, ymin=51, ymax=52) %>% 
-#   ggplot() +
-#   geom_sf(data = fires %>% 
-#             distinct(ward) %>% 
-#             mutate(count = 1) %>% 
-#             left_join(w22_shape %>% 
-#                         select(WD22CD, geometry) %>%
-#                         rename(ward = WD22CD)) %>% 
-#             st_as_sf() %>%
-#             st_transform(crs = 4326), aes(), colour="white", fill = "black") +
-#   geom_sf(aes(fill=count), colour="white") +
-#   scale_fill_viridis(option = "turbo",
-#                      begin = 0,
-#                      end = 1) +
-#   theme(# strip.text = element_blank(),
-#     # plot.margin = unit(c(1,9,0.7,0.8), "lines"),
-#     plot.background = element_rect(fill = "white"),
-#     panel.background = element_blank(),
-#     axis.line.x.bottom = element_line(colour = "black"),
-#     axis.line.y.left = element_line(colour = "black"),
-#     # panel.grid.major.x = element_line(color = "darkgrey", linewidth = 0.4),
-#     # panel.grid.major.y = element_line(color = "darkgrey", linewidth = 0.4),
-#     # panel.grid.minor.x = element_line(color = "darkgrey", linewidth = 0.1),
-#     # panel.grid.minor.y = element_line(color = "darkgrey", linewidth = 0.1),
-#     legend.title = element_blank(),
-#     legend.position = c(.9, 0.17)) +
-#   labs(title = "Total number of HMO fires in each London ward between 2009 and 2014", 
-#        subtitle = "Wards with no recorded HMO fires are filled black") 
-
 
 
 th_map_lsoa <- ss_th %>% 

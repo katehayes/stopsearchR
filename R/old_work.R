@@ -1,14 +1,6 @@
 
 
 
-
-
-
-
-
-
-
-
 w_shape <- st_read("/Users/katehayes/Library/CloudStorage/GoogleDrive-khayes2@sheffield.ac.uk/My Drive/CL_drive_data/Wards_December_2022_Boundaries_UK_BFC_-3416072881830331872 (1)/WD_DEC_2022_UK_BFC.shp")
 # going to use ward boundaries from the same place as below, the place the police linked, and hope it works
 # actually maybe I've changed back

@@ -1,11 +1,36 @@
 # install.packages("osmdata")
 library(osmdata)
 library(sf)
-library(ggplot2)
-library(dplyr)
+library(readxl)
 
-# diff between 1 and 2?
 
+##------##------##------##------##------##------##------##------##------##------##------##------##------##------##------
+##-------------### Boundaries - LAs, wards, LSOAs ###--------------------------------------------------------------------
+##------##------##------##------##------##------##------##------##------##------##------##------##------##------##------
+
+# police are using 2011 LSOAs for the data release
+# https://webarchive.nationalarchives.gov.uk/ukgwa/20160110200248/http://www.ons.gov.uk/ons/guide-method/geography/products/census/spatial/2011/index.html
+# this is the link from the police data website
+
+temp1 <- tempfile()
+temp2 <- tempfile()
+download.file("https://webarchive.nationalarchives.gov.uk/ukgwa/20160110200248mp_/http://www.ons.gov.uk/ons/external-links/social-media/g-m/lsoa-boundaries---full-resolution--extent-of-the-realm.html", temp1)
+unzip(zipfile = temp1, exdir = temp2)
+# lsoa11_shape <- sf::read_sf(temp2)
+lsoa11_shape <- st_read(temp2)
+
+
+w22_shape <- read_sf("https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Wards_December_2022_Boundaries_UK_BFC/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson")
+la21_shape <- read_sf("https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Local_Authority_Districts_May_2021_UK_BGC_2022/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson")
+
+temp1 <- tempfile()
+download.file("https://www.arcgis.com/sharing/rest/content/items/ff21f0cfbdcc4206906920b3a8858867/data", temp1)
+lsoa2LA <- read_xlsx(temp1)
+
+
+##------##------##------##------##------##------##------##------##------##------##------##------##------##------##------
+##-------------### Roads, rivers, etc ###--------------------------------------------------------------------
+##------##------##------##------##------##------##------##------##------##------##------##------##------##------##------
 
 # q <- opq(bbox = 'greater london uk') %>%
 #   add_osm_feature(key = 'highway') %>%

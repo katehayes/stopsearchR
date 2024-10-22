@@ -2,9 +2,7 @@
 library(tidyverse)
 library(httr)
 library(jsonlite)
-library(lubridate)
-library(zoo)
-library(sf)
+
 # use_readme_md()
 
 # First, exploring the police API.....
@@ -46,6 +44,8 @@ download.file("https://data.police.uk/data/archive/2015-08.zip", temp4)
 
 # should be able to extract either by force or by data type
 # COME BACK HERE AND CHANGE FUNCTION EXTRACT SO THAT YOU CAN GIVE IT A LIST OF ZIPPED FOLDERS IN TEMPFILES
+source("R/functions/extract.R")
+
 raw_met_ss <- extract(zipped_folder = temp1, police = "metropolitan", data_type = "stop-and-search") %>% 
   bind_rows(extract(zipped_folder = temp2,  police = "metropolitan", data_type = "stop-and-search")) %>% 
   bind_rows(extract(zipped_folder = temp3,  police = "metropolitan", data_type = "stop-and-search")) %>% 

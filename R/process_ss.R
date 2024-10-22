@@ -1,3 +1,6 @@
+library(lubridate)
+library(zoo)
+library(sf)
 
 # Adding more spatial info/details
 # Police give long/lat, the centre points of the LSOA
@@ -10,6 +13,8 @@ ss_geom <- raw_met_ss %>%
   distinct(lat, lng)  %>%
   st_as_sf(coords = c("lng", "lat"),
            crs = 4326)
+
+source("R/functions/lnglat_to_lsoa.R")
 
 ss_geom <- ss_geom %>% 
   mutate(lsoa = lnglat_to_lsoa(stop_search_sf = ss_geom, lsoa_shp_file = lsoa11_shape, col = "LSOA11NM"),

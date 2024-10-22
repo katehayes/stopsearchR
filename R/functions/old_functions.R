@@ -100,19 +100,19 @@ extract_ss <- function(common_path, file_pattern = "-metropolitan-stop-and-searc
 # }
 
 
-lonlat_to_lsoa <- function(ss_sf,
-LSOA_shape = lsoa_shape,
-name_col = "LSOA11NM") {
+lonlat_to_lsoa <- function(ss_sf, lsoa_shape = lsoa11_shape, name_col = "LSOA11NM") {
+  
   lsoa_trans <- st_transform(lsoa_shape, crs = 3857)
   ss_trans <- st_transform(ss_sf, crs = 3857)
   lsoa_names <- lsoa_trans[[name_col]]
   ii <- as.integer(st_intersects(ss_trans, lsoa_trans))
   lsoa_names[ii]
+  
 }
 
 
 lonlat_to_lsoashape <- function(ss_sf,
-                                LSOA_shape = lsoa_shape,
+                                lsoa_shape = lsoa_shape,
                                 shape_col = "geometry") {
   lsoa_trans <- st_transform(lsoa_shape, crs = 3857)
   ss_trans <- st_transform(ss_sf, crs = 3857)

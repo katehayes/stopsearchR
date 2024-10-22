@@ -1,12 +1,14 @@
 # stopsearchR
 ## Data sources
-**Police stop & search**<br>
-Data.police.uk (https://data.police.uk) makes lots of stop & search data available. It offers an API - but, on exploration, it seems like the API only gives access to s&s data back as far as 2021. 
-
-The site also has an 'archive' page (https://data.police.uk/data/archive/), where a number of zipped folders are available for download. Each folder contains a number of subfolders containing one month's worth of data. For every month, there is one csv for each police force, for each data series (crime, outcome, stop & search data) - i.e. there are lots of files inside folders inside folders. The archive hosts data from Dec 2010 onwards - the stop & search data in particular goes back to about 2015 (depends on police force). 
-<br><br>
 **Boundaries, roads, police stations etc.**<br>
-The ONS Open Geography Portal (https://geoportal.statistics.gov.uk/)
+Boundaries for administrative regions (LAs, wards) and statistical geographies (LSOAs) come from the ONS Open Geography Portal (https://geoportal.statistics.gov.uk/).<br>
+Roads, police stations, rivers etc. are OpenStreetMap data, retrieved using the osmdata package (https://rspatialdata.github.io/osm.html).<br>
+
+**Police stop & search**<br>
+Data.police.uk (https://data.police.uk) makes lots of police data - including stop & search data - available. It offers an API - but, on exploration, it seems like the API only gives access to s&s data back as far as 2021. <br>
+The site also has an 'archive' page (https://data.police.uk/data/archive/), where a number of zipped folders are available for download. Each folder contains a number of subfolders containing one month's worth of data. For every month, there is one csv for each police force, for each data series (crime, outcome, stop & search data) - i.e. there are lots of files inside folders inside folders. The archive hosts data from Dec 2010 onwards - the stop & search data in particular goes back to about 2015 (depends on police force). <br>
+In script [get_ss.R](https://github.com/katehayes/stopsearchR/blob/main/R/get_ss.R), data is extracted from the archive (using function [extract](https://github.com/katehayes/stopsearchR/blob/main/R/functions/extract.R)).<br>
+This stop & search data is incident-level. Search location is provided at the LSOA level - for each search we are given the co-ordinates (latitude, longitude) of the midpoint of the LSOA in which the search occurred. In script [process_ss.R](https://github.com/katehayes/stopsearchR/blob/main/R/process_ss.R), more spatial data is added to police datasets, to allow us to map the data. 
 
 ## Police stop & search in Tower Hamlets at a glance
 Just looking here at one London borough, Tower Hamlets. From 2015, searches increased in frequency, before peaking in late 2018 and then falling. Since mid-2022, search frequency has been close to its 2015/16 level. <br>

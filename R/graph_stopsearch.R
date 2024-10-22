@@ -3,7 +3,7 @@ library(viridis)
 
 plot_th_ss_space <- met_ss %>% 
   st_drop_geometry() %>% 
-  filter(LA == "Tower Hamlets") %>% 
+  filter(la == "Tower Hamlets") %>% 
   group_by(lsoa, ward, lsoa_shape) %>% 
   mutate(count = 1) %>% 
   summarise(count = sum(count)) %>% 
@@ -45,7 +45,7 @@ ggsave(filename = "plots/plot_th_ss_space.png", plot_th_ss_space)
 
 plot_th_powers_time <- met_ss %>% 
   st_drop_geometry() %>% 
-  filter(LA == "Tower Hamlets") %>% 
+  filter(la == "Tower Hamlets") %>% 
   mutate(sec60 = ifelse(powers == "Criminal Justice and Public Order Act 1994 (section 60)",
                         "Section 60", "Other power"),
          sec60 = ifelse(powers == "Police and Criminal Evidence Act 1984 (section 1)",
@@ -71,9 +71,7 @@ plot_th_powers_time <- met_ss %>%
     panel.grid.minor.x = element_blank(),
     panel.grid.minor.y = element_blank(),
     legend.title = element_blank(),
-    legend.position = c(.85, 0.8)
-    # plot.margin = unit(c(1,9,0.7,0.8), "lines")
-    ) + 
+    legend.position = c(.85, 0.8)) + 
   scale_y_continuous(name = "",
                      expand = c(0,0),
                      breaks = seq(0, 700, 100),
@@ -93,9 +91,9 @@ ggsave(filename = "plots/plot_th_powers_time.png", plot_th_powers_time)
 
 plot_th_age_time <- met_ss %>% 
   st_drop_geometry() %>% 
-  filter(LA == "Tower Hamlets") %>% 
+  filter(la == "Tower Hamlets") %>% 
   # mutate(month_yr = as.yearmon(date, "%Y %m")) %>% 
-  mutate(age = ifelse(is.na(age), "Unknown", age)) %>% 
+  mutate(age = ifelse(is.na(age), "unknown", age)) %>% 
   mutate(count = 1) %>% 
   group_by(date, age) %>% 
   summarise(count = sum(count)) %>% 
@@ -118,7 +116,9 @@ plot_th_age_time <- met_ss %>%
   ggplot() +
   geom_bar(aes(x = date, y = count, fill = age),
            stat = "identity", position = "stack", width=1) +
-  facet_grid(rows = vars(age)) +
+  facet_grid(rows = vars(age),
+             space = "free_y",
+             scales = "free_y") +
   scale_x_date(name = "",
                date_breaks = "1 year",
                date_minor_breaks = "3 months",
@@ -126,6 +126,9 @@ plot_th_age_time <- met_ss %>%
                date_labels = "%Y",
                # expand = expansion(add = c(.6, 500)),
                expand = c(0,0)) +
+  scale_y_continuous(name = "",
+                     breaks = seq(0, 60, 10),
+                     minor_breaks = seq(0, 60, 5)) +
   theme(strip.text = element_blank(),
         plot.background = element_rect(fill = "white"),
         panel.background = element_blank(),
@@ -134,11 +137,11 @@ plot_th_age_time <- met_ss %>%
         panel.grid.major.x = element_blank(),
         panel.grid.major.y = element_line(color = "darkgrey", linewidth = 0.4),
         panel.grid.minor.x = element_blank(),
-        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.y = element_line(color = "darkgrey", linewidth = 0.2),
         legend.title = element_blank()) + 
   scale_fill_manual(values = c("#0054FFFF", "#1A9850FF", "#90CDE7", "#ED3F39FF", "lightgrey")) +
   labs(title = "Daily stop and searches in Tower Hamlets, by age group", 
-       subtitle = "7-day rolling average")
+       subtitle = "7-day rolling average") 
 
   plot_th_age_time 
   ggsave(filename = "plots/plot_th_age_time.png", plot_th_age_time)

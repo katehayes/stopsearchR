@@ -10,6 +10,12 @@ The site also has an 'archive' page (https://data.police.uk/data/archive/), wher
 In script [get_ss.R](https://github.com/katehayes/stopsearchR/blob/main/R/get_ss.R), data is extracted from the archive (using function [extract](https://github.com/katehayes/stopsearchR/blob/main/R/functions/extract.R)).<br>
 This stop & search data is incident-level. Search location is provided at the LSOA level - for each search we are given the co-ordinates (latitude, longitude) of the midpoint of the LSOA in which the search occurred. In script [process_ss.R](https://github.com/katehayes/stopsearchR/blob/main/R/process_ss.R), more spatial data is added to police datasets, to allow us to map the data. 
 
+## Note re. police data archive
+I'm trying to take stock of the archive - figure out what data files are absent/present/present in multiple versions, how to interact with the archive in the most efficient way, etc. Plan: to try develop a package.
+
+![plot_missing_byzip](https://github.com/katehayes/stopsearchR/blob/main/plots/plot_missing_byzip.png)
+
+
 ## Police stop & search in Tower Hamlets at a glance
 Just looking here at one London borough, Tower Hamlets. From 2015, searches increased in frequency, before peaking in late 2018 and then falling. Since mid-2022, search frequency has been close to its 2015/16 level. <br>
 ![plot_th_powers_time](https://github.com/katehayes/stopsearchR/blob/main/plots/plot_th_powers_time.png)
@@ -19,6 +25,7 @@ Just looking here at one London borough, Tower Hamlets. From 2015, searches incr
 One particular LSOA - 'Tower Hamlets 021D' in Whitechapel - is recorded as the location of 4654 searches across the period 2016 to 2024. No other LSOA in Tower Hamlets records searches at anything close to this frequency - searches happen in 'Tower Hamlets 021D' more than twice as often as the next most frequently searched LSOA in Tower Hamlets.<br>
 ![plot_th_ss_space](https://github.com/katehayes/stopsearchR/blob/main/plots/plot_th_ss_space.png)
 <br>
+
 
 
 
